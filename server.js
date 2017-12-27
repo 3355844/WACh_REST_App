@@ -17,7 +17,6 @@ var currentId = 2;
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
-// app.use(cors());
 
 
 app.get('/products', function (req, res) {

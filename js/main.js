@@ -62,8 +62,7 @@ $(function () {
         });
     });
 
-//    DELTE
-
+//    DELETE
     $('table').on('click', '.delete-button', function () {
         console.log('delete button is pressed');
         var rowEl = $(this).closest('tr');
