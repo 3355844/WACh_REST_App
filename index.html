@@ -17,8 +17,16 @@
         <button class="btn btn-primary mt-2">Create/POST</button>
     </form>
 </section>
-
+<section class="container">
+    <h2 class="mt-2">Chat</h2>
+    <ul id="messages"></ul>
+    <form id="form-chat">
+        <input class="form-control col-3 mt-2" id="m" autocomplete="off" />
+        <button class="btn btn-outline-danger mt-2">Send</button>
+    </form>
+</section>
 <hr>
+
 <table class="table table-warning">
     <thead>
     <tr>
@@ -28,9 +36,9 @@
     </tr>
     </thead>
     <tbody>
-
     </tbody>
 </table>
+<script src="/socket.io/socket.io.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

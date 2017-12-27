@@ -3,6 +3,7 @@
   "engines": {
     "node": "8.8.1"
   },
+  "description": "wach",
   "scripts": {
     "start": "node server.js"
   },
@@ -13,6 +14,7 @@
     "cors": "^2.8.4",
     "express": "4.16.2",
     "node-static": "^0.7.10",
+    "socket.io": "^2.0.4",
     "utf-8-validate": "4.0.0",
     "ws": "3.3.3"
   }
