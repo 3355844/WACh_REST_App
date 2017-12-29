@@ -6,13 +6,17 @@ var io = require('socket.io')(http);
 var jwt = require('jsonwebtoken');
 var PORT = process.env.PORT || 3000;
 
-var products = [
+var users = [
     {
         id: 1,
-        name: 'laptop'
+        name: 'Admin',
+        password: '1234',
+        email: 'admin@email.com'
     }, {
         id: 2,
-        name: 'microwawe'
+        name: 'Andrei',
+        password: 'aaaa',
+        email: 'aaa@email.com'
     }
 ];
 
@@ -21,25 +25,36 @@ var currentId = 2;
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
 
-app.get('/api', function (req, res) {
+app.get('/api', (req, res) => {
     res.json({text: "api"});
 });
 
-app.post('/api/login', function (req, res) {
+app.post('/api/login', (req, res) => {
     //    auth user
-    const user = {id: 3};
-    const token = jwt.sign({user}, 'my_secret_key');
-    res.json({
-        token: token
+    var userEmail = req.body.email;
+    var userPass = req.body.password;
+
+    users.forEach((user, index) => {
+        console.log(userEmail + userPass);
+        console.log(user.password + user.email);
+        if (user.password === userPass && user.email === userEmail) {
+            console.log('inside if ');
+            var token = jwt.sign({user}, 'my_secret_key');
+            res.json({
+                success: true,
+                token: token,
+                user: user
+            });
+        }
     });
 });
 
-app.get('/api/protected', ensureToken, function (req, res) {
+app.get('/api/protected', ensureToken, (req, res) => {
     jwt.verify(req.token, 'my_secret_key', function (err, data) {
         if (err) {
-            console.log('NOP');
             res.sendStatus(403);
         } else {
+            console.log('is token');
             res.json({
                 text: 'this protected api',
                 data: data
@@ -56,48 +71,50 @@ function ensureToken(req, res, next) {
         req.token = bearerToken;
         next();
     } else {
+        console.log('no token');
         res.sendStatus(403);
     }
 }
 
 app.get('/products', function (req, res) {
     console.log('GET URL products');
-    res.send({products: products});
+    res.send({products: users});
 });
 
-app.post('/products', function (req, res) {
+app.post('/products', (req, res) => {
     console.log('POST URL products');
-    var productName = req.body.name;
+    var userName = req.body.name;
     currentId++;
-    products.push({
+    users.push({
         id: currentId,
-        name: productName
+        name: userName
+
     });
     res.send('Successfully created');
 });
 
-app.put('/products/:id', function (req, res) {
+app.put('/products/:id', (req, res) => {
     console.log('PUT URL products');
     var id = req.params.id;
     var newName = req.body.newName;
     var found = false;
-    products.forEach(function (product, index) {
-        if (!found && product.id === Number(id)) {
-            product.name = newName;
+    users.forEach(function (user, index) {
+        if (!found && user.id === Number(id)) {
+            user.name = newName;
         }
     });
 
     res.send('Successfully updated product');
 });
 
-app.delete('/products/:id', function (req, res) {
+app.delete('/products/:id', (req, res) => {
     console.log('DELETE URL products');
     var id = req.params.id;
     var found = false;
 
-    products.forEach(function (product, index) {
-        if (!found && product.id === Number(id)) {
-            products.splice(index, 1);
+    users.forEach((user, index) => {
+        if (!found && user.id === Number(id)) {
+            users.splice(index, 1);
         }
     });
 
