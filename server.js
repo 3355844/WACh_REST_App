@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var jwt = require('jsonwebtoken');
 var PORT = process.env.PORT || 3000;
 
 var products = [
@@ -20,6 +21,44 @@ var currentId = 2;
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
 
+app.get('/api', function (req, res) {
+    res.json({text: "api"});
+});
+
+app.post('/api/login', function (req, res) {
+    //    auth user
+    const user = {id: 3};
+    const token = jwt.sign({user}, 'my_secret_key');
+    res.json({
+        token: token
+    });
+});
+
+app.get('/api/protected', ensureToken, function (req, res) {
+    jwt.verify(req.token, 'my_secret_key', function (err, data) {
+        if (err) {
+            console.log('NOP');
+            res.sendStatus(403);
+        } else {
+            res.json({
+                text: 'this protected api',
+                data: data
+            });
+        }
+    });
+});
+
+function ensureToken(req, res, next) {
+    const bearerHeader = req.headers["authorization"];
+    if (typeof bearerHeader !== 'undefined') {
+        const bearer = bearerHeader.split(" ");
+        const bearerToken = bearer[1];
+        req.token = bearerToken;
+        next();
+    } else {
+        res.sendStatus(403);
+    }
+}
 
 app.get('/products', function (req, res) {
     console.log('GET URL products');
@@ -43,7 +82,7 @@ app.put('/products/:id', function (req, res) {
     var newName = req.body.newName;
     var found = false;
     products.forEach(function (product, index) {
-        if(!found && product.id === Number(id)){
+        if (!found && product.id === Number(id)) {
             product.name = newName;
         }
     });
@@ -57,7 +96,7 @@ app.delete('/products/:id', function (req, res) {
     var found = false;
 
     products.forEach(function (product, index) {
-        if(!found && product.id === Number(id)){
+        if (!found && product.id === Number(id)) {
             products.splice(index, 1);
         }
     });
@@ -67,7 +106,7 @@ app.delete('/products/:id', function (req, res) {
 
 io.on('connection', function (socket) {
     console.log('user connected');
-    socket.on('chat message', function(msg){
+    socket.on('chat message', function (msg) {
         console.log('message: ' + msg);
         io.emit('chat message', msg);
     });
