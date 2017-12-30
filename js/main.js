@@ -1,11 +1,11 @@
 $(function () {
     var socket = io();
-    $('#form-chat').submit(function(){
+    $('#form-chat').submit(function () {
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
         return false;
     });
-    socket.on('chat message', function(msg){
+    socket.on('chat message', function (msg) {
         console.log(msg);
         $('#messages').append($('<li>').text(msg));
     });
@@ -35,6 +35,30 @@ $(function () {
                 })
             }
         });
+    });
+
+//    LOGIN USER
+    $('#login-form').on('submit', function (event) {
+        console.log('Login button is pressed');
+        event.preventDefault();
+        var emailForm = $('#emailForm');
+        var passwordForm = $('#passwordForm');
+        console.log('values ' + emailForm + passwordForm);
+        $.ajax({
+            url: '/api/login',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                passwordForm: passwordForm.val(),
+                emailForm: emailForm.val()
+            }),
+            success: function (res) {
+                console.log(res);
+                emailForm.val('');
+                passwordForm.val('');
+                $('#get-button').click();
+            }
+        })
     });
 
 //  CREATE POST

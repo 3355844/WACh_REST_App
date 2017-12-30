@@ -31,22 +31,33 @@ app.get('/api', (req, res) => {
 
 app.post('/api/login', (req, res) => {
     //    auth user
-    var userEmail = req.body.email;
-    var userPass = req.body.password;
+    var userEmail = req.body.emailForm;
+    var userPass = req.body.passwordForm;
+    var userTmp;
+    var token;
+    console.log('Come from form  ' + userEmail+ ' - ' + userPass);
 
     users.forEach((user, index) => {
-        console.log(userEmail + userPass);
         console.log(user.password + user.email);
         if (user.password === userPass && user.email === userEmail) {
             console.log('inside if ');
-            var token = jwt.sign({user}, 'my_secret_key');
-            res.json({
-                success: true,
-                token: token,
-                user: user
-            });
+            userTmp = user;
+            token = jwt.sign({user}, 'my_secret_key');
         }
     });
+    if (userTmp) {
+        res.json({
+            success: true,
+            token: token,
+            users: users
+        });
+    } else {
+        res.json({
+            success: false,
+            user: userTmp
+        });
+
+    }
 });
 
 app.get('/api/protected', ensureToken, (req, res) => {
@@ -125,13 +136,11 @@ io.on('connection', function (socket) {
     console.log('user connected');
     socket.on('chat message', function (msg) {
         console.log('message: ' + msg);
-        io.emit('chat message', msg);
+        io.emit('chat message', 'Mes:' + msg);
     });
     socket.on('disconnect', function () {
         console.log('user disconnect');
     });
-
-
 });
 
 http.listen(PORT, function () {
