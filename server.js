@@ -17,6 +17,11 @@ var users = [
         name: 'Andrei',
         password: 'aaaa',
         email: 'aaa@email.com'
+    }, {
+        id: 3,
+        name: 'Andrei2',
+        password: 'aaaa2',
+        email: 'aaa2@email.com'
     }
 ];
 
@@ -61,7 +66,7 @@ app.post('/api/login', (req, res) => {
 });
 
 app.get('/api/protected', ensureToken, (req, res) => {
-    jwt.verify(req.token, 'my_secret_key', function (err, data) {
+    jwt.verify(req.token, 'my_secret_key', (err, data) =>{
         if (err) {
             res.sendStatus(403);
         } else {
@@ -88,7 +93,7 @@ function ensureToken(req, res, next) {
     }
 }
 
-app.get('/users', function (req, res) {
+app.get('/users', (req, res) => {
     console.log('GET URL users');
     res.send({users: users});
 });
@@ -110,7 +115,7 @@ app.put('/users/:id', (req, res) => {
     var id = req.params.id;
     var newName = req.body.newName;
     var found = false;
-    users.forEach(function (user, index) {
+    users.forEach((user, index) => {
         if (!found && user.id === Number(id)) {
             user.name = newName;
         }
@@ -133,17 +138,17 @@ app.delete('/users/:id', (req, res) => {
     res.send('Successfully deleted user');
 });
 
-io.on('connection', function (socket) {
+io.on('connection', (socket) => {
     console.log('user connected');
-    socket.on('chat message', function (msg) {
+    socket.on('chat message', (msg) => {
         console.log('message: ' + msg);
         io.emit('chat message', 'Mes:' + msg);
     });
-    socket.on('disconnect', function () {
+    socket.on('disconnect', () => {
         console.log('user disconnect');
     });
 });
 
-http.listen(PORT, function () {
+http.listen(PORT, () => {
     console.log('Server listen PORT: ' + PORT)
 });

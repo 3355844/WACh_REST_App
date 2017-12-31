@@ -1,7 +1,8 @@
 $(() => {
     var token = 'bearer ';
-    var userTitleName = document.getElementById('userTitleName');
-    // SOCKETS
+    var userTitleName = document.getElementById('userTitleName');// SOCKETS
+
+    //  SOCKETS
     var socket = io();
     $('#form-chat').submit(() => {
         socket.emit('chat message', $('#m').val());
@@ -13,7 +14,7 @@ $(() => {
         $('#messages').append($('<li>').text(msg));
     });
 
-// PROTECTED PAGE
+//  PROTECTED PAGE
     $('#profile').on('click', () => {
         console.log('is click');
         console.log(token);
@@ -27,7 +28,7 @@ $(() => {
         })
     });
 
-//    GET/READ
+//  GET/READ
     $('#get-button').on('click', () => {
         $.ajax({
             // cache: false,
@@ -54,13 +55,13 @@ $(() => {
         });
     });
 
-//    LOGIN USER
+//  LOGIN USER
     $('#login-form').on('submit', (event) => {
         console.log('Login button is pressed');
         event.preventDefault();
         var emailForm = $('#emailForm');
         var passwordForm = $('#passwordForm');
-        console.log('values ' + emailForm.val() + ' - ' + passwordForm.val() + ' Username: ' + userTitleName.outerText );
+        console.log('values ' + emailForm.val() + ' - ' + passwordForm.val() + ' Username: ' + userTitleName.outerText);
         $.ajax({
             url: '/api/login',
             method: 'POST',
@@ -119,7 +120,7 @@ $(() => {
         });
     });
 
-//    DELETE
+//  DELETE
     $('table').on('click', '.delete-button', () => {
         console.log('delete button is pressed');
         var rowEl = $(this).closest('tr');
