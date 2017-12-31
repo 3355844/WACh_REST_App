@@ -8,14 +8,14 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-<h1 class="text-center">WACh</h1>
+<div id="userTitleName" class="text-center">WACh</div>
 <section class="container">
     <form id="login-form">
         <input class="form-control" name="emailForm" id="emailForm" type="email"  placeholder="your email">
         <input class="form-control" name="passwordForm" id="passwordForm" type="password"  placeholder="your password">
         <button id="login-btn" class="btn btn-outline-danger">Login</button>
     </form>
-    <a class="btn-outline-warning btn" href="/api/protected">protected page</a>
+    <a id="profile" class="btn-outline-warning btn">protected page</a>
 </section>
 <section class="container">
     <button class="btn btn-outline-success mt-2" id="get-button">READ/GET</button>

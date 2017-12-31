@@ -35,7 +35,7 @@ app.post('/api/login', (req, res) => {
     var userPass = req.body.passwordForm;
     var userTmp;
     var token;
-    console.log('Come from form  ' + userEmail+ ' - ' + userPass);
+    console.log('Come from form  ' + userEmail + ' - ' + userPass);
 
     users.forEach((user, index) => {
         console.log(user.password + user.email);
@@ -45,18 +45,18 @@ app.post('/api/login', (req, res) => {
             token = jwt.sign({user}, 'my_secret_key');
         }
     });
+    console.log('Token val: ' + token);
     if (userTmp) {
         res.json({
             success: true,
             token: token,
-            users: users
+            user: userTmp
         });
     } else {
         res.json({
             success: false,
             user: userTmp
         });
-
     }
 });
 
@@ -77,6 +77,7 @@ app.get('/api/protected', ensureToken, (req, res) => {
 function ensureToken(req, res, next) {
     const bearerHeader = req.headers["authorization"];
     if (typeof bearerHeader !== 'undefined') {
+        console.log(bearerHeader);
         const bearer = bearerHeader.split(" ");
         const bearerToken = bearer[1];
         req.token = bearerToken;
@@ -87,13 +88,13 @@ function ensureToken(req, res, next) {
     }
 }
 
-app.get('/products', function (req, res) {
-    console.log('GET URL products');
-    res.send({products: users});
+app.get('/users', function (req, res) {
+    console.log('GET URL users');
+    res.send({users: users});
 });
 
-app.post('/products', (req, res) => {
-    console.log('POST URL products');
+app.post('/users', (req, res) => {
+    console.log('POST URL users');
     var userName = req.body.name;
     currentId++;
     users.push({
@@ -104,8 +105,8 @@ app.post('/products', (req, res) => {
     res.send('Successfully created');
 });
 
-app.put('/products/:id', (req, res) => {
-    console.log('PUT URL products');
+app.put('/users/:id', (req, res) => {
+    console.log('PUT URL users');
     var id = req.params.id;
     var newName = req.body.newName;
     var found = false;
@@ -115,11 +116,11 @@ app.put('/products/:id', (req, res) => {
         }
     });
 
-    res.send('Successfully updated product');
+    res.send('Successfully updated user');
 });
 
-app.delete('/products/:id', (req, res) => {
-    console.log('DELETE URL products');
+app.delete('/users/:id', (req, res) => {
+    console.log('DELETE URL users');
     var id = req.params.id;
     var found = false;
 
@@ -129,7 +130,7 @@ app.delete('/products/:id', (req, res) => {
         }
     });
 
-    res.send('Successfully deleted product');
+    res.send('Successfully deleted user');
 });
 
 io.on('connection', function (socket) {
