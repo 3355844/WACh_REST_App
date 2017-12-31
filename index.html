@@ -10,28 +10,38 @@
 <body>
 <div id="userTitleName" class="text-center">WACh</div>
 <section class="container">
-    <form id="login-form">
-        <input class="form-control col-2" name="emailForm" id="emailForm" type="email" placeholder="your email">
-        <input class="form-control col-2" name="passwordForm" id="passwordForm" type="password"
-               placeholder="your password">
-        <button id="login-btn" class="btn btn-outline-danger">Login</button>
-    </form>
-    <a id="profile" class="btn-outline-warning btn">protected page</a>
-</section>
-<section class="container">
-    <button class="btn btn-outline-success mt-2" id="get-button">READ/GET</button>
-    <form id="create-form">
-        <input class="form-control col-3 mt-2" type="text" id="create-input"/>
-        <button class="btn btn-primary mt-2">Create/POST</button>
-    </form>
-</section>
-<section class="container">
-    <h2 class="mt-2">Chat</h2>
-    <ul id="messages"></ul>
-    <form id="form-chat">
-        <input class="form-control col-3 mt-2" id="m" autocomplete="off"/>
-        <button class="btn btn-outline-danger mt-2">Send</button>
-    </form>
+    <div class="row">
+        <!--Login form-->
+        <form class="col-2" id="login-form">
+            <input class="form-control  mt-2" name="emailForm" id="emailForm" type="email"
+                   placeholder="your email">
+            <input class="form-control mt-2" name="passwordForm" id="passwordForm" type="password"
+                   placeholder="your password">
+            <button id="login-btn" class="btn btn-outline-danger mt-2">Login</button>
+        </form>
+        <!--GET BUTTON-->
+        <div class="col-2">
+            <button class="btn btn-outline-success mt-2" id="get-button">READ/GET</button>
+        </div>
+        <!--REGISTER-->
+        <form id="create-form" class="col-2">
+            <input class="form-control mt-2" type="text" id="create-input"/>
+            <button class="btn btn-primary mt-2">Register</button>
+        </form>
+        <!--Protected page-->
+        <div class="col-1">
+            <a id="profile" class="btn-outline-warning btn">Profile</a>
+        </div>
+        <!--Chat-->
+        <div class="col-4 ml-2 text-center">
+            <h1>Chat</h1>
+            <ul class="text-left list-group" id="messages"></ul>
+            <form id="form-chat">
+                <input class="form-control mt-2" id="m" autocomplete="off"/>
+                <button class="btn btn-outline-danger mt-2">Send</button>
+            </form>
+        </div>
+    </div>
 </section>
 <hr>
 

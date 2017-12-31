@@ -5,17 +5,19 @@ $(() => {
     //  SOCKETS
     var socket = io();
     $('#form-chat').submit(() => {
-        socket.emit('chat message', $('#m').val());
+        var date = new Date();
+        var mess = userTitleName.outerText + ': ' + $('#m').val();
+        socket.emit('chat message', mess);
         $('#m').val('');
         return false;
     });
     socket.on('chat message', (msg) => {
         console.log(msg);
-        $('#messages').append($('<li>').text(msg));
+        $('#messages').append($('<li class="list-group-item">').text(msg));
     });
 
 //  PROTECTED PAGE
-    $('#profile').on('click', () => {
+    $('#profile').on('click', function () {
         console.log('is click');
         console.log(token);
         $.ajax({
@@ -56,7 +58,7 @@ $(() => {
     });
 
 //  LOGIN USER
-    $('#login-form').on('submit', (event) => {
+    $('#login-form').on('submit', function (event) {
         console.log('Login button is pressed');
         event.preventDefault();
         var emailForm = $('#emailForm');
@@ -84,7 +86,7 @@ $(() => {
     });
 
 //  CREATE POST
-    $('#create-form').on('submit', (event) => {
+    $('#create-form').on('submit', function (event) {
         console.log('Post button is pressed');
         event.preventDefault();
         var createInput = $('#create-input');
@@ -103,25 +105,27 @@ $(() => {
     });
 
 //  UPDATE/PUT
-    $('table').on('click', '.update-button', () => {
-        var rowEL = $(this).closest('tr');
-        var id = rowEL.find('.id').text();
-        var newName = rowEL.find('.name').val();
-        console.log(newName);
-        $.ajax({
-            url: '/users/' + id,
-            method: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify({newName: newName}),
-            success: (res) => {
-                console.log(res);
-                $('#get-button').click();
-            }
-        });
-    });
+    $('table').on('click', '.update-button', function () {
+            var rowEL = $(this).closest('tr');
+            var id = rowEL.find('.id').text();
+            var newName = rowEL.find('.name').val();
+            console.log(newName);
+            $.ajax({
+                url: '/users/' + id,
+                method: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({newName: newName}),
+                success: (res) => {
+                    console.log(res);
+                    $('#get-button').click();
+                }
+            });
+        }
+    )
+    ;
 
 //  DELETE
-    $('table').on('click', '.delete-button', () => {
+    $('table').on('click', '.delete-button', function () {
         console.log('delete button is pressed');
         var rowEl = $(this).closest('tr');
         var id = rowEl.find('.id').text();
