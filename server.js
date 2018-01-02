@@ -1,34 +1,27 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var mongo = require('mongodb');
+var monk = require('monk');
+var db = monk('mongodb://root:root@ds161136.mlab.com:61136/mydb');
+
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var jwt = require('jsonwebtoken');
 var PORT = process.env.PORT || 3000;
 
-var users = [
-    {
-        id: 1,
-        name: 'Admin',
-        password: '1234',
-        email: 'admin@email.com'
-    }, {
-        id: 2,
-        name: 'Andrei',
-        password: 'aaaa',
-        email: 'aaa@email.com'
-    }, {
-        id: 3,
-        name: 'Andrei2',
-        password: 'aaaa2',
-        email: 'aaa2@email.com'
-    }
-];
+// var users = [];
 
-var currentId = 2;
+var currentId = 3;
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
+app.use(function (req, res, next) {
+    req.db = db;
+    next();
+});
+
+// Methods
 
 app.get('/api', (req, res) => {
     res.json({text: "api"});
@@ -41,6 +34,7 @@ app.post('/api/login', (req, res) => {
     var userTmp;
     var token;
     console.log('Come from form  ' + userEmail + ' - ' + userPass);
+
 
     users.forEach((user, index) => {
         console.log(user.password + user.email);
@@ -66,7 +60,7 @@ app.post('/api/login', (req, res) => {
 });
 
 app.get('/api/protected', ensureToken, (req, res) => {
-    jwt.verify(req.token, 'my_secret_key', (err, data) =>{
+    jwt.verify(req.token, 'my_secret_key', (err, data) => {
         if (err) {
             res.sendStatus(403);
         } else {
@@ -79,35 +73,37 @@ app.get('/api/protected', ensureToken, (req, res) => {
     });
 });
 
-function ensureToken(req, res, next) {
-    const bearerHeader = req.headers["authorization"];
-    if (typeof bearerHeader !== 'undefined') {
-        console.log(bearerHeader);
-        const bearer = bearerHeader.split(" ");
-        const bearerToken = bearer[1];
-        req.token = bearerToken;
-        next();
-    } else {
-        console.log('no token');
-        res.sendStatus(403);
-    }
-}
 
-app.get('/users', (req, res) => {
+app.get('/users', function (req, res) {
+    var db = req.db;
     console.log('GET URL users');
-    res.send({users: users});
+    var users = db.get('userlist');
+    users.find({}, {}, function (e, docs) {
+        console.log(JSON.stringify(docs));
+        res.json({userList: docs});
+    });
 });
 
 app.post('/users', (req, res) => {
     console.log('POST URL users');
-    var userName = req.body.name;
-    currentId++;
-    users.push({
-        id: currentId,
-        name: userName
 
+    // User fields
+    var newUser = {
+        username: req.body.userName,
+        email: req.body.email,
+        userPass: req.body.userPass,
+        userPassCheck: req.body.regPassCheck,
+        fullName: req.body.fullName,
+        age: req.body.age,
+        location: req.body.userLocation,
+        gender: req.body.gender
+    };
+
+    var db = req.db;
+    var users = db.get('userlist');
+    users.insert(newUser, function (err, result) {
+        res.send("Successfully created");
     });
-    res.send('Successfully created');
 });
 
 app.put('/users/:id', (req, res) => {
@@ -115,12 +111,17 @@ app.put('/users/:id', (req, res) => {
     var id = req.params.id;
     var newName = req.body.newName;
     var found = false;
+    var users = db.get('userlist');
+
+
+
+
+
     users.forEach((user, index) => {
-        if (!found && user.id === Number(id)) {
+        if (!found && user._id === Number(id)) {
             user.name = newName;
         }
     });
-
     res.send('Successfully updated user');
 });
 
@@ -138,16 +139,36 @@ app.delete('/users/:id', (req, res) => {
     res.send('Successfully deleted user');
 });
 
+// Sockets
+
 io.on('connection', (socket) => {
-    console.log('user connected');
+    socket.on('userName', (userName) => {
+        io.emit('userName', userName);
+        console.log('connect user ' + userName);
+    });
+
     socket.on('chat message', (msg) => {
         console.log('message: ' + msg);
-        io.emit('chat message',  msg);
+        io.emit('chat message', msg);
     });
     socket.on('disconnect', () => {
         console.log('user disconnect');
     });
 });
+
+function ensureToken(req, res, next) {
+    const bearerHeader = req.headers["authorization"];
+    if (typeof bearerHeader !== 'undefined') {
+        console.log(bearerHeader);
+        const bearer = bearerHeader.split(" ");
+        const bearerToken = bearer[1];
+        req.token = bearerToken;
+        next();
+    } else {
+        console.log('no token');
+        res.sendStatus(403);
+    }
+}
 
 http.listen(PORT, () => {
     console.log('Server listen PORT: ' + PORT)

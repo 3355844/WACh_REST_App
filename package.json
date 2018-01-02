@@ -17,6 +17,12 @@
     "node-static": "^0.7.10",
     "socket.io": "^2.0.4",
     "utf-8-validate": "4.0.0",
-    "ws": "3.3.3"
+    "ws": "3.3.3",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "mongodb": "^2.2.25",
+    "monk": "^4.0.0",
+    "morgan": "~1.9.0",
+    "serve-favicon": "~2.4.5"
   }
 }

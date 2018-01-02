@@ -1,5 +1,8 @@
 $(() => {
     var token = 'bearer ';
+    var user = {
+        username: 'Guest'
+    };
     var userTitleName = document.getElementById('userTitleName');// SOCKETS
 
     //  SOCKETS
@@ -8,6 +11,7 @@ $(() => {
         var date = new Date();
         var mess = userTitleName.outerText + ': ' + $('#m').val();
         socket.emit('chat message', mess);
+        socket.emit('userName', user.username);
         $('#m').val('');
         return false;
     });
@@ -41,12 +45,13 @@ $(() => {
                 var tbodyEL = $('tbody');
                 tbodyEL.html('');
 
-                res.users.forEach(function (user) {
+                res.userList.forEach(function (user) {
                     console.log('function res');
                     tbodyEL.append('\
                     <tr>\
-                    <td class="id">' + user.id + '</td>\
-                    <td><input type="text" class="name form-control" value="' + user.name + '"/></td>\
+                    <td class="id">' + user._id + '</td>\
+                    <td>' + user.location + '</td>\
+                    <td><input type="text" class="name form-control" value="' + user.username + '"/></td>\
                     <td>\
                     <button class="update-button btn btn-outline-success">UPDATE/PUT</button>\
                     <button class="delete-button btn btn-outline-danger">DELETE</button>\
@@ -89,54 +94,95 @@ $(() => {
     $('#create-form').on('submit', function (event) {
         console.log('Post button is pressed');
         event.preventDefault();
-        var createInput = $('#create-input');
+        var regName = $('#register-name');
+        var regEmail = $('#register-email');
+        var regPass = $('#register-pass');
+        var regPassCheck = $('#register-check-pass');
+        var regFullName = $('#register-fullname');
+        var regAge = $('#register-age');
+        var regLocation = $('#register-location');
+        var regGender = $('#register-gender');
 
-        $.ajax({
-            url: '/users',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({name: createInput.val()}),
-            success: function (res) {
-                console.log(res);
-                createInput.val('');
-                $('#get-button').click();
+        var errorCount = 0;
+
+        $('#create-form input').each((index, input) => {
+            console.log(index);
+            console.log(input.value);
+            if (input.value === '') {
+                errorCount++;
             }
-        })
-    });
+        });
+        console.log(errorCount);
 
-//  UPDATE/PUT
-    $('table').on('click', '.update-button', function () {
-            var rowEL = $(this).closest('tr');
-            var id = rowEL.find('.id').text();
-            var newName = rowEL.find('.name').val();
-            console.log(newName);
+        if (errorCount === 0) {
             $.ajax({
-                url: '/users/' + id,
-                method: 'PUT',
+                url: '/users',
+                method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({newName: newName}),
-                success: (res) => {
+                data: JSON.stringify({
+                    userName: regName.val(),
+                    email: regEmail.val(),
+                    userPass: regPass.val(),
+                    regPassCheck: regPassCheck.val(),
+                    fullName: regFullName.val(),
+                    age: regAge.val(),
+                    userLocation: regLocation.val(),
+                    gender: regGender.val()
+                }),
+                success: function (res) {
                     console.log(res);
+
+                    regName.val('');
+                    regEmail.val('');
+                    regPass.val('');
+                    regPassCheck.val('');
+                    regFullName.val('');
+                    regAge.val('');
+                    regLocation.val('');
+                    regGender.val('');
                     $('#get-button').click();
                 }
-            });
+            })
+        } else {
+            alert('Fill all fields');
+            $('#get-button').click();
         }
-    )
-    ;
+    });
+});
 
-//  DELETE
-    $('table').on('click', '.delete-button', function () {
-        console.log('delete button is pressed');
-        var rowEl = $(this).closest('tr');
-        var id = rowEl.find('.id').text();
+
+//  UPDATE/PUT
+$('table').on('click', '.update-button', function () {
+        var rowEL = $(this).closest('tr');
+        var id = rowEL.find('.id').text();
+        var newName = rowEL.find('.name').val();
+        console.log(newName);
         $.ajax({
             url: '/users/' + id,
-            method: 'DELETE',
+            method: 'PUT',
             contentType: 'application/json',
-            success: function (res) {
+            data: JSON.stringify({newName: newName}),
+            success: (res) => {
                 console.log(res);
                 $('#get-button').click();
             }
-        })
+        });
+    }
+)
+;
+
+//  DELETE
+$('table').on('click', '.delete-button', function () {
+    console.log('delete button is pressed');
+    var rowEl = $(this).closest('tr');
+    var id = rowEl.find('.id').text();
+    $.ajax({
+        url: '/users/' + id,
+        method: 'DELETE',
+        contentType: 'application/json',
+        success: function (res) {
+            console.log(res);
+            $('#get-button').click();
+        }
     })
 });
