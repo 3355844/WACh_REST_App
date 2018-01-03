@@ -2,21 +2,26 @@ $(() => {
     var userTitleName = document.getElementById('userTitleName');// SOCKETS
     var token = 'bearer ';
     var userTmp = {
-      username: userTitleName
+        username: userTitleName
     };
     //  SOCKETS
     var socket = io();
     $('#form-chat').submit(() => {
-        var date = new Date();
         var mess = userTitleName.outerText + ': ' + $('#m').val();
         socket.emit('chat message', mess);
         socket.emit('userName', userTmp.username);
         $('#m').val('');
         return false;
     });
-    socket.on('chat message', (msg) => {
-        console.log(msg);
-        $('#messages').append($('<li class="list-group-item">').text(msg));
+    socket.on('chat message', (res) => {
+        console.log(res);
+        var mess = JSON.parse(res);
+        $('#messages').empty();
+        var messReverse = mess.messages.reverse();
+        messReverse.forEach(function (message) {
+            $('#messages').append($('<li class="list-group-item">').text(message.msg));
+        });
+
     });
 
 //  PROTECTED PAGE
@@ -48,7 +53,7 @@ $(() => {
                     console.log('function res');
                     tbodyEL.append('\
                     <tr>\
-                    <td class="id">' + user._id + '</td>\
+                    <td>' + user._id + '</td>\
                     <td>' + user.location + '</td>\
                     <td><input type="text" class="name form-control" value="' + user.username + '"/></td>\
                     <td>\
@@ -158,6 +163,7 @@ $(() => {
         var id = rowEL.find('.id').text();
         var newName = rowEL.find('.name').val();
         console.log(newName);
+
         $.ajax({
             url: '/users/' + id,
             method: 'PUT',

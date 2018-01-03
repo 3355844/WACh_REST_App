@@ -11,8 +11,6 @@ var PORT = process.env.PORT || 3000;
 
 var users;
 
-var currentId = 3;
-
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
@@ -34,14 +32,12 @@ app.post('/api/login', (req, res) => {
     var token;
     console.log('Come from form  ' + userEmail + ' - ' + userPass);
 
-
     var users = db.get('userlist');
     // Get User by email
     users.findOne({email: userEmail}, {}, function (err, user) {
 
         if (user) {
             if (user.userPass === userPass) {
-                console.log('inside if ');
                 userTmp = user;
                 token = jwt.sign({user}, 'my_secret_key');
             }
@@ -49,7 +45,7 @@ app.post('/api/login', (req, res) => {
             console.log('No such user');
         }
         console.log('Token val: ' + token);
-        //
+
         if (userTmp) {
             res.json({
                 success: true,
@@ -119,7 +115,7 @@ app.put('/users/:id', (req, res) => {
     // Update name
     users.findOneAndUpdate({_id: id}, {$set: {username: newName}}).then((updateDoc) => {
         // console.log(JSON.stringify(updateDoc));
-        // res.send(JSON.stringify(updateDoc));
+        res.send(JSON.stringify(updateDoc));
     });
 });
 
@@ -135,11 +131,21 @@ app.delete('/users/:id', (req, res) => {
 // Sockets
 io.on('connection', (socket) => {
     console.log('connect user');
-
-
     socket.on('chat message', (msg) => {
-        console.log('message: ' + msg);
-        io.emit('chat message', msg);
+        //Put message to database
+        var next = 0;
+        var messeges = db.get('messages');
+        messeges.insert({
+            msg: msg,
+            date: new Date()
+        });
+        //Get ten messages
+        messeges.find({}, {sort:{date: -1}, limit: 5}, function (err, res) {
+            console.log('message: ' + msg);
+            // msg connection
+            io.emit('chat message', JSON.stringify({messages: res}));
+            console.log(JSON.stringify({messages: res}));
+        });
     });
 
     socket.on('disconnect', () => {
