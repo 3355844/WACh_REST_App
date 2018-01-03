@@ -1,17 +1,16 @@
 $(() => {
-    var token = 'bearer ';
-    var user = {
-        username: 'Guest'
-    };
     var userTitleName = document.getElementById('userTitleName');// SOCKETS
-
+    var token = 'bearer ';
+    var userTmp = {
+      username: userTitleName
+    };
     //  SOCKETS
     var socket = io();
     $('#form-chat').submit(() => {
         var date = new Date();
         var mess = userTitleName.outerText + ': ' + $('#m').val();
         socket.emit('chat message', mess);
-        socket.emit('userName', user.username);
+        socket.emit('userName', userTmp.username);
         $('#m').val('');
         return false;
     });
@@ -81,7 +80,7 @@ $(() => {
                 if (data.success === true) {
                     console.log('success: ' + data.success);
                     console.log('token - ' + data.token);
-                    console.log('userName: ' + data.user.name);
+                    console.log('userName: ' + data.user.username);
                     token += data.token;
                     userTitleName.innerText = data.user.username;
                     emailForm.val('');
@@ -151,11 +150,10 @@ $(() => {
             $('#get-button').click();
         }
     });
-});
 
 
 //  UPDATE/PUT
-$('table').on('click', '.update-button', function () {
+    $('table').on('click', '.update-button', function () {
         var rowEL = $(this).closest('tr');
         var id = rowEL.find('.id').text();
         var newName = rowEL.find('.name').val();
@@ -165,27 +163,26 @@ $('table').on('click', '.update-button', function () {
             method: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify({newName: newName}),
-            success: (res) => {
-                console.log(res);
+            success: function (res) {
                 $('#get-button').click();
             }
         });
-    }
-)
-;
+    });
 
 //  DELETE
-$('table').on('click', '.delete-button', function () {
-    console.log('delete button is pressed');
-    var rowEl = $(this).closest('tr');
-    var id = rowEl.find('.id').text();
-    $.ajax({
-        url: '/users/' + id,
-        method: 'DELETE',
-        contentType: 'application/json',
-        success: function (res) {
-            console.log(res);
-            $('#get-button').click();
-        }
-    })
+    $('table').on('click', '.delete-button', function () {
+        console.log('delete button is pressed');
+        var rowEl = $(this).closest('tr');
+        var id = rowEl.find('.id').text();
+        $.ajax({
+            url: '/users/' + id,
+            method: 'DELETE',
+            contentType: 'application/json',
+            success: function (res) {
+                console.log(res);
+                $('#get-button').click();
+            }
+        })
+    });
 });
+

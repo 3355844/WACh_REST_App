@@ -118,7 +118,8 @@ app.put('/users/:id', (req, res) => {
     var users = db.get('userlist');
     // Update name
     users.findOneAndUpdate({_id: id}, {$set: {username: newName}}).then((updateDoc) => {
-        res.send(JSON.stringify(updateDoc));
+        // console.log(JSON.stringify(updateDoc));
+        // res.send(JSON.stringify(updateDoc));
     });
 });
 
@@ -139,10 +140,13 @@ app.delete('/users/:id', (req, res) => {
 // Sockets
 io.on('connection', (socket) => {
     console.log('connect user');
+
+
     socket.on('chat message', (msg) => {
         console.log('message: ' + msg);
         io.emit('chat message', msg);
     });
+
     socket.on('disconnect', () => {
         console.log('user disconnect');
     });
