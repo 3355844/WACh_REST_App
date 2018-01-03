@@ -45,7 +45,7 @@ app.post('/api/login', (req, res) => {
                 userTmp = user;
                 token = jwt.sign({user}, 'my_secret_key');
             }
-        }else {
+        } else {
             console.log('No such user');
         }
         console.log('Token val: ' + token);
@@ -127,13 +127,8 @@ app.delete('/users/:id', (req, res) => {
     console.log('DELETE URL users');
     var id = req.params.id;
     var found = false;
-
-    users.forEach((user, index) => {
-        if (!found && user.id === Number(id)) {
-            users.splice(index, 1);
-        }
-    });
-
+    var users = db.get('userlist');
+    users.remove({_id: id});
     res.send('Successfully deleted user');
 });
 
