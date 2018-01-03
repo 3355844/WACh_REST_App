@@ -3,14 +3,13 @@ var bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('mongodb://root:root@ds161136.mlab.com:61136/mydb');
-
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var jwt = require('jsonwebtoken');
 var PORT = process.env.PORT || 3000;
 
-// var users = [];
+var users;
 
 var currentId = 3;
 
@@ -36,27 +35,34 @@ app.post('/api/login', (req, res) => {
     console.log('Come from form  ' + userEmail + ' - ' + userPass);
 
 
-    users.forEach((user, index) => {
-        console.log(user.password + user.email);
-        if (user.password === userPass && user.email === userEmail) {
-            console.log('inside if ');
-            userTmp = user;
-            token = jwt.sign({user}, 'my_secret_key');
+    var users = db.get('userlist');
+    // Get User by email
+    users.findOne({email: userEmail}, {}, function (err, user) {
+
+        if (user) {
+            if (user.userPass === userPass) {
+                console.log('inside if ');
+                userTmp = user;
+                token = jwt.sign({user}, 'my_secret_key');
+            }
+        }else {
+            console.log('No such user');
         }
+        console.log('Token val: ' + token);
+        //
+        if (userTmp) {
+            res.json({
+                success: true,
+                token: token,
+                user: userTmp
+            });
+        } else {
+            res.json({
+                success: false,
+            });
+        }
+
     });
-    console.log('Token val: ' + token);
-    if (userTmp) {
-        res.json({
-            success: true,
-            token: token,
-            user: userTmp
-        });
-    } else {
-        res.json({
-            success: false,
-            user: userTmp
-        });
-    }
 });
 
 app.get('/api/protected', ensureToken, (req, res) => {
@@ -79,7 +85,6 @@ app.get('/users', function (req, res) {
     console.log('GET URL users');
     var users = db.get('userlist');
     users.find({}, {}, function (e, docs) {
-        console.log(JSON.stringify(docs));
         res.json({userList: docs});
     });
 });
@@ -110,19 +115,11 @@ app.put('/users/:id', (req, res) => {
     console.log('PUT URL users');
     var id = req.params.id;
     var newName = req.body.newName;
-    var found = false;
     var users = db.get('userlist');
-
-
-
-
-
-    users.forEach((user, index) => {
-        if (!found && user._id === Number(id)) {
-            user.name = newName;
-        }
+    // Update name
+    users.findOneAndUpdate({_id: id}, {$set: {username: newName}}).then((updateDoc) => {
+        res.send(JSON.stringify(updateDoc));
     });
-    res.send('Successfully updated user');
 });
 
 app.delete('/users/:id', (req, res) => {
@@ -140,13 +137,8 @@ app.delete('/users/:id', (req, res) => {
 });
 
 // Sockets
-
 io.on('connection', (socket) => {
-    socket.on('userName', (userName) => {
-        io.emit('userName', userName);
-        console.log('connect user ' + userName);
-    });
-
+    console.log('connect user');
     socket.on('chat message', (msg) => {
         console.log('message: ' + msg);
         io.emit('chat message', msg);

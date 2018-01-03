@@ -78,13 +78,17 @@ $(() => {
                 emailForm: emailForm.val()
             }),
             success: (data) => {
-                console.log('success: ' + data.success);
-                console.log('token - ' + data.token);
-                console.log('userName: ' + data.user.name);
-                token += data.token;
-                emailForm.val('');
+                if (data.success === true) {
+                    console.log('success: ' + data.success);
+                    console.log('token - ' + data.token);
+                    console.log('userName: ' + data.user.name);
+                    token += data.token;
+                    userTitleName.innerText = data.user.username;
+                    emailForm.val('');
+                } else {
+                    alert('Try more or register');
+                }
                 passwordForm.val('');
-                userTitleName.innerText = data.user.name;
                 $('#get-button').click();
             }
         })
@@ -131,7 +135,6 @@ $(() => {
                 }),
                 success: function (res) {
                     console.log(res);
-
                     regName.val('');
                     regEmail.val('');
                     regPass.val('');
@@ -142,7 +145,7 @@ $(() => {
                     regGender.val('');
                     $('#get-button').click();
                 }
-            })
+            });
         } else {
             alert('Fill all fields');
             $('#get-button').click();
