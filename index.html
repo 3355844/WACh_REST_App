@@ -10,28 +10,30 @@
 <body>
 <nav class="container-fluid bg-info">
     <div class="row nav">
-        <div class="col-1 nav-item text-center">lOGO</div>
+        <div class="col-1 nav-item text-center">
+            <img class=" mt-1 " src="/public/images/avatar.jpg" width="50px" alt="">
+        </div>
         <div>
             <!--Login form-->
-            <form id="login-form" class="form-inline">
+            <form id="login-form" class="form-inline ml-2">
                 <div class="form-group">
-                    <label for="emailForm"> Email:</label>
-                    <input class="form-control  mt-2" name="emailForm" id="emailForm" type="email"
+                    <label for="emailForm" class="ml-2">Email:</label>
+                    <input class="form-control ml-2 mt-1" name="emailForm" id="emailForm" type="email"
                            placeholder="your email">
                 </div>
                 <div class="form-group">
-                    <label for="passwordForm">Password:</label>
-                    <input class="form-control mt-2" name="passwordForm" id="passwordForm" type="password"
+                    <label for="passwordForm" class="ml-2">Password:</label>
+                    <input class="form-control mt-1 ml-2" name="passwordForm" id="passwordForm" type="password"
                            placeholder="your password">
                 </div>
-                <button id="login-btn" class="btn btn-danger mt-2">Login</button>
+                <button id="login-btn" class="btn btn-danger mt-1 ml-2">Login</button>
             </form>
         </div>
-        <div class="dropdown">
+        <div class="dropdown mt-1 ml-2">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Register
                 <span class="caret"></span></button>
             <!--Register form-->
-            <form id="create-form" class="dropdown-menu">
+            <form id="create-form" class="dropdown-menu p-2">
                 <input class="form-control mt-2" type="text" placeholder="Name" id="register-name"/>
                 <input class="form-control mt-2" type="email" placeholder="Email" id="register-email"/>
                 <input class="form-control mt-2" type="text" placeholder="Full Name" id="register-fullname"/>
