@@ -8,7 +8,7 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-<nav class="container-fluid bg-info">
+<nav class="container-fluid bg-inverse text-muted">
     <div class="row nav">
         <div class="col-1 nav-item text-center">
             <img class=" mt-1 " src="/public/images/avatar.jpg" width="50px" alt="">
@@ -26,7 +26,7 @@
                     <input class="form-control mt-1 ml-2" name="passwordForm" id="passwordForm" type="password"
                            placeholder="your password">
                 </div>
-                <button id="login-btn" class="btn btn-danger mt-1 ml-2">Login</button>
+                <button id="login-btn" class="btn btn-success mt-1 ml-2">Login</button>
             </form>
         </div>
         <div class="dropdown mt-1 ml-2">
@@ -47,6 +47,9 @@
             </form>
 
         </div>
+        <div>
+            <button class="btn btn-danger mt-1 ml-2">Logout</button>
+        </div>
     </div>
 
 </nav>
@@ -56,11 +59,11 @@
         <div class="col-2">
             <button class="btn btn-outline-success mt-2" id="get-button">READ/GET</button>
         </div>
-        <!--Protected page-->
+        <!--Profile page-->
         <div class="col-1">
-            <a id="profile" class="btn-outline-warning btn">
+            <a id="profile" class="btn-outline-warning btn mt-2">
                 <div id="userTitleName" class="text-center col-1 nav-item">WACh</div>
-                </a>
+            </a>
         </div>
         <!--Chat-->
         <div class="col-4 ml-2 text-center">
