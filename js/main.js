@@ -4,7 +4,7 @@ $(() => {
     var userTmp = {
         username: userTitleName
     };
-    //  SOCKETS
+//  SOCKETS
     var socket = io();
     $('#form-chat').submit(() => {
         var mess = userTitleName.outerText + ': ' + $('#m').val();
@@ -53,7 +53,7 @@ $(() => {
                     console.log('function res');
                     tbodyEL.append('\
                     <tr>\
-                    <td>' + user._id + '</td>\
+                    <td class="id">' + user._id + '</td>\
                     <td>' + user.location + '</td>\
                     <td><input type="text" class="name form-control" value="' + user.username + '"/></td>\
                     <td>\
@@ -156,20 +156,21 @@ $(() => {
         }
     });
 
-
 //  UPDATE/PUT
     $('table').on('click', '.update-button', function () {
+        console.log('Update button is pressed!!');
         var rowEL = $(this).closest('tr');
         var id = rowEL.find('.id').text();
         var newName = rowEL.find('.name').val();
         console.log(newName);
-
+        console.log(id);
         $.ajax({
             url: '/users/' + id,
             method: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify({newName: newName}),
             success: function (res) {
+                console.log(res);
                 $('#get-button').click();
             }
         });
