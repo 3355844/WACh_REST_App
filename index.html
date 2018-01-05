@@ -8,37 +8,57 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div id="userTitleName" class="text-center">WACh</div>
+<nav class="container-fluid bg-info">
+    <div class="row nav">
+        <div class="col-1 nav-item text-center">lOGO</div>
+        <div>
+            <!--Login form-->
+            <form id="login-form" class="form-inline">
+                <div class="form-group">
+                    <label for="emailForm"> Email:</label>
+                    <input class="form-control  mt-2" name="emailForm" id="emailForm" type="email"
+                           placeholder="your email">
+                </div>
+                <div class="form-group">
+                    <label for="passwordForm">Password:</label>
+                    <input class="form-control mt-2" name="passwordForm" id="passwordForm" type="password"
+                           placeholder="your password">
+                </div>
+                <button id="login-btn" class="btn btn-danger mt-2">Login</button>
+            </form>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Register
+                <span class="caret"></span></button>
+            <!--Register form-->
+            <form id="create-form" class="dropdown-menu">
+                <input class="form-control mt-2" type="text" placeholder="Name" id="register-name"/>
+                <input class="form-control mt-2" type="email" placeholder="Email" id="register-email"/>
+                <input class="form-control mt-2" type="text" placeholder="Full Name" id="register-fullname"/>
+                <input class="form-control mt-2" type="text" placeholder="Age" id="register-age"/>
+                <input class="form-control mt-2" type="text" placeholder="Location" id="register-location"/>
+                <input class="form-control mt-2" type="text" placeholder="Gender" id="register-gender"/>
+                <input class="form-control mt-2" type="password" placeholder="Password" id="register-pass"/>
+                <input class="form-control mt-2" type="password" placeholder="Repeat Password"
+                       id="register-check-pass"/>
+                <button class="btn btn-primary mt-2">Register</button>
+            </form>
+
+        </div>
+    </div>
+
+</nav>
 <section class="container">
     <div class="row">
-        <!--Login form-->
-        <form class="col-2" id="login-form">
-            <input class="form-control  mt-2" name="emailForm" id="emailForm" type="email"
-                   placeholder="your email">
-            <input class="form-control mt-2" name="passwordForm" id="passwordForm" type="password"
-                   placeholder="your password">
-            <button id="login-btn" class="btn btn-outline-danger mt-2">Login</button>
-        </form>
         <!--Get button-->
         <div class="col-2">
             <button class="btn btn-outline-success mt-2" id="get-button">READ/GET</button>
         </div>
-        <!--Register form-->
-        <form id="create-form" class="col-2">
-            <input class="form-control mt-2" type="text" placeholder="Name" id="register-name"/>
-            <input class="form-control mt-2" type="email" placeholder="Email" id="register-email"/>
-            <input class="form-control mt-2" type="text" placeholder="Full Name" id="register-fullname"/>
-            <input class="form-control mt-2" type="text" placeholder="Age" id="register-age"/>
-            <input class="form-control mt-2" type="text" placeholder="Location" id="register-location"/>
-            <input class="form-control mt-2" type="text" placeholder="Gender" id="register-gender"/>
-            <input class="form-control mt-2" type="password" placeholder="Password" id="register-pass"/>
-            <input class="form-control mt-2" type="password" placeholder="Repeat Password"
-                   id="register-check-pass"/>
-            <button class="btn btn-primary mt-2">Register</button>
-        </form>
         <!--Protected page-->
         <div class="col-1">
-            <a id="profile" class="btn-outline-warning btn">Profile</a>
+            <a id="profile" class="btn-outline-warning btn">
+                <div id="userTitleName" class="text-center col-1 nav-item">WACh</div>
+                </a>
         </div>
         <!--Chat-->
         <div class="col-4 ml-2 text-center">
@@ -47,7 +67,7 @@
             <form id="form-chat">
                 <input class="form-control mt-2" id="m" autocomplete="off"/>
                 <button class="btn btn-outline-danger mt-2">Send</button>
-                <button class="btn btn-outline-warning mt-2" >Previos</button>
+                <button class="btn btn-outline-warning mt-2">Previos</button>
             </form>
         </div>
     </div>
