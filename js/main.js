@@ -24,8 +24,8 @@ $(() => {
 
     });
 
-//  PROTECTED PAGE
-    $('#profile').on('click', function () {
+//  PROFILE PAGE
+    $('#profile').on('click',  () => {
         console.log('is click');
         console.log(token);
         $.ajax({
@@ -66,8 +66,13 @@ $(() => {
         });
     });
 
+//  LOGOUT USER
+    $('#login-form').on('submit',  (event) => {
+    });
+
+
 //  LOGIN USER
-    $('#login-form').on('submit', function (event) {
+    $('#login-form').on('submit', (event) => {
         console.log('Login button is pressed');
         event.preventDefault();
         var emailForm = $('#emailForm');
@@ -99,7 +104,7 @@ $(() => {
     });
 
 //  CREATE POST
-    $('#create-form').on('submit', function (event) {
+    $('#create-form').on('submit', (event) => {
         console.log('Post button is pressed');
         event.preventDefault();
         var regName = $('#register-name');
@@ -157,7 +162,7 @@ $(() => {
     });
 
 //  UPDATE/PUT
-    $('table').on('click', '.update-button', function () {
+    $('table').on('click', '.update-button', () => {
         console.log('Update button is pressed!!');
         var rowEL = $(this).closest('tr');
         var id = rowEL.find('.id').text();
