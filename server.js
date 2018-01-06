@@ -13,6 +13,9 @@ var users;
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
+
+// MongoDB connection
+
 app.use(function (req, res, next) {
     req.db = db;
     next();
@@ -20,9 +23,57 @@ app.use(function (req, res, next) {
 
 // Methods
 
-app.get('/api', (req, res) => {
-    res.json({text: "api"});
+
+app.get('/admin', (req, res) => {
+    res.redirect('/login.html');
 });
+
+app.post('/admin/login', (req, res) => {
+    var adminName = req.body.adminEmail;
+    var adminPass = req.body.adminPass;
+    var adminUser;
+    var token;
+
+    adminUser.name = 'administrator';
+
+    if (adminName === 'admin' && adminPass === 'admin') {
+
+        res.json({
+            success: true,
+            token: token,
+            user: adminUser
+        });
+    } else {
+        res.json({
+            success: false,
+        });
+    }
+});
+
+app.get('/admin/users', adminToken, (req, res) => {
+    var db = req.db;
+    console.log('GET URL users');
+    var users = db.get('userlist');
+    users.find({}, {}, function (e, docs) {
+        res.json({userList: docs});
+    });
+});
+
+function adminToken(req, res, next) {
+    const bearerHeader = req.headers["authorization"];
+    if (typeof bearerHeader !== 'undefined') {
+        console.log(bearerHeader);
+        const bearer = bearerHeader.split(" ");
+        const bearerToken = bearer[1];
+        req.token = bearerToken;
+        next();
+    } else {
+        console.log('no token');
+        res.sendStatus(403);
+    }
+}
+
+// Users URL
 
 app.post('/api/login', (req, res) => {
     //    auth user
@@ -112,7 +163,7 @@ app.post('/users', (req, res) => {
     });
 });
 
-app.put('/users/:id', (req, res) => {
+app.put('/users/:id', ensureToken, (req, res) => {
     console.log('PUT URL users');
     var id = req.params.id;
     var newName = req.body.newName;
@@ -125,7 +176,7 @@ app.put('/users/:id', (req, res) => {
     });
 });
 
-app.delete('/users/:id', (req, res) => {
+app.delete('/users/:id', ensureToken, (req, res) => {
     console.log('DELETE URL users');
     var id = req.params.id;
     var found = false;

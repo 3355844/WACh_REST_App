@@ -40,7 +40,32 @@ $(() => {
         })
     });
 
-//  GET/READ
+//  GET/READ/
+    $('#get-button').on('click', () => {
+        $.ajax({
+            // cache: false,
+            url: 'users',
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (res) {
+                var tbodyEL = $('tbody');
+                tbodyEL.html('');
+
+                res.userList.forEach(function (user) {
+                    console.log('function res');
+                    tbodyEL.append('\
+                    <tr>\
+                    <td>' + user.location + '</td>\
+                    <td><input type="text" class="name form-control" value="' + user.username + '"/></td>\
+                    \
+                    </tr>');
+                })
+            }
+        });
+    });
+
+
+    //CRUD ADMIN
     $('#get-button').on('click', () => {
         $.ajax({
             // cache: false,
@@ -213,6 +238,4 @@ $(() => {
             }
         })
     });
-
-
 });
