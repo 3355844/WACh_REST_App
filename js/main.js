@@ -25,7 +25,7 @@ $(() => {
     });
 
 //  PROFILE PAGE
-    $('#profile').on('click',  () => {
+    $('#profile').on('click', () => {
         console.log('is click');
         console.log(token);
         $.ajax({
@@ -67,7 +67,18 @@ $(() => {
     });
 
 //  LOGOUT USER
-    $('#login-form').on('submit',  (event) => {
+    $('#logout').on('click', (event) => {
+        console.log('Logout is pressed!!!');
+        $.ajax({
+            url: '/api/logout',
+            method: 'POST',
+            contentType: 'application/json',
+            success:(data) => {
+                token = 'bearer ';
+                userTitleName.innerText = 'WACh';
+                console.log('title name is changed!!!');
+            }
+        })
     });
 
 

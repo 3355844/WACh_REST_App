@@ -57,7 +57,13 @@ app.post('/api/login', (req, res) => {
                 success: false,
             });
         }
+    });
+});
 
+app.post('/api/logout', (req, res) => {
+    console.log('POST Logout');
+    res.json({
+        success: true
     });
 });
 
@@ -74,7 +80,6 @@ app.get('/api/protected', ensureToken, (req, res) => {
         }
     });
 });
-
 
 app.get('/users', function (req, res) {
     var db = req.db;
@@ -140,7 +145,7 @@ io.on('connection', (socket) => {
             date: new Date()
         });
         //Get ten messages
-        messeges.find({}, {sort:{date: -1}, limit: 5}, function (err, res) {
+        messeges.find({}, {sort: {date: -1}, limit: 5}, function (err, res) {
             console.log('message: ' + msg);
             // msg connection
             io.emit('chat message', JSON.stringify({messages: res}));
