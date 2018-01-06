@@ -1,11 +1,12 @@
 $(() => {
-    var userTitleName = document.getElementById('userTitleName');// SOCKETS
+    var userTitleName = document.getElementById('userTitleName');
     var token = 'bearer ';
+    var socket = io();
     var userTmp = {
         username: userTitleName
     };
 //  SOCKETS
-    var socket = io();
+
     $('#form-chat').submit(() => {
         var mess = userTitleName.outerText + ': ' + $('#m').val();
         socket.emit('chat message', mess);
@@ -13,6 +14,7 @@ $(() => {
         $('#m').val('');
         return false;
     });
+
     socket.on('chat message', (res) => {
         console.log(res);
         var mess = JSON.parse(res);
@@ -81,7 +83,6 @@ $(() => {
         })
     });
 
-
 //  LOGIN USER
     $('#login-form').on('submit', (event) => {
         console.log('Login button is pressed');
@@ -118,6 +119,7 @@ $(() => {
     $('#create-form').on('submit', (event) => {
         console.log('Post button is pressed');
         event.preventDefault();
+        // User fills
         var regName = $('#register-name');
         var regEmail = $('#register-email');
         var regPass = $('#register-pass');
@@ -128,7 +130,7 @@ $(() => {
         var regGender = $('#register-gender');
 
         var errorCount = 0;
-
+        // Check fills
         $('#create-form').find('input').each((index, input) => {
             console.log(index);
             console.log(input.value);
@@ -136,13 +138,16 @@ $(() => {
                 errorCount++;
             }
         });
-        console.log(errorCount);
-
+        // Check passwords
+        if (regPass !== regPassCheck) {
+            errorCount++;
+        }
+        // Add User or Err
         if (errorCount === 0) {
             $.ajax({
                 url: '/users',
                 method: 'POST',
-                contentType: 'application/json',
+                contentType: 'application/json', // Send user details
                 data: JSON.stringify({
                     userName: regName.val(),
                     email: regEmail.val(),
@@ -155,6 +160,7 @@ $(() => {
                 }),
                 success: function (res) {
                     console.log(res);
+                    // Clear fills if user success login
                     regName.val('');
                     regEmail.val('');
                     regPass.val('');
@@ -207,5 +213,6 @@ $(() => {
             }
         })
     });
-});
 
+
+});
