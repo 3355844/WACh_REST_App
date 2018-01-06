@@ -73,7 +73,7 @@ $(() => {
             url: '/api/logout',
             method: 'POST',
             contentType: 'application/json',
-            success:(data) => {
+            success: (data) => {
                 token = 'bearer ';
                 userTitleName.innerText = 'WACh';
                 console.log('title name is changed!!!');
@@ -129,7 +129,7 @@ $(() => {
 
         var errorCount = 0;
 
-        $('#create-form input').each((index, input) => {
+        $('#create-form').find('input').each((index, input) => {
             console.log(index);
             console.log(input.value);
             if (input.value === '') {
@@ -173,13 +173,13 @@ $(() => {
     });
 
 //  UPDATE/PUT
-    $('table').on('click', '.update-button', () => {
+    $('table').on('click', '.update-button', function () {
         console.log('Update button is pressed!!');
         var rowEL = $(this).closest('tr');
         var id = rowEL.find('.id').text();
         var newName = rowEL.find('.name').val();
-        console.log(newName);
-        console.log(id);
+        console.log("NewName: " + newName);
+        console.log("Id: " + id);
         $.ajax({
             url: '/users/' + id,
             method: 'PUT',

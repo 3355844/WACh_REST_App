@@ -116,6 +116,7 @@ app.put('/users/:id', (req, res) => {
     console.log('PUT URL users');
     var id = req.params.id;
     var newName = req.body.newName;
+    console.log(newName);
     var users = db.get('userlist');
     // Update name
     users.findOneAndUpdate({_id: id}, {$set: {username: newName}}).then((updateDoc) => {
