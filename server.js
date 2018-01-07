@@ -29,15 +29,15 @@ app.get('/admin', (req, res) => {
 });
 
 app.post('/admin/login', (req, res) => {
-    var adminName = req.body.adminEmail;
+    console.log('come to Post method');
+    var adminName = req.body.adminLogin;
     var adminPass = req.body.adminPass;
     var adminUser;
     var token;
-
-    adminUser.name = 'administrator';
-
+    adminUser = 'administrator';
     if (adminName === 'admin' && adminPass === 'admin') {
-
+        token = jwt.sign({adminUser}, 'admin_key');
+        console.log(token);
         res.json({
             success: true,
             token: token,
@@ -51,16 +51,27 @@ app.post('/admin/login', (req, res) => {
 });
 
 app.get('/admin/users', adminToken, (req, res) => {
-    var db = req.db;
-    console.log('GET URL users');
-    var users = db.get('userlist');
-    users.find({}, {}, function (e, docs) {
-        res.json({userList: docs});
+    console.log('admin users URL');
+    console.log();
+    jwt.verify(req.token, 'admin_key', (err, data) => {
+        if (err) {
+            res.sendStatus(403);
+        } else {
+            var db = req.db;
+            console.log('GET URL users');
+            var users = db.get('userlist');
+            users.find({}, {}, function (e, docs) {
+                res.json({userList: docs});
+            });
+        }
     });
+
+
 });
 
 function adminToken(req, res, next) {
     const bearerHeader = req.headers["authorization"];
+    console.log(bearerHeader);
     if (typeof bearerHeader !== 'undefined') {
         console.log(bearerHeader);
         const bearer = bearerHeader.split(" ");
@@ -68,7 +79,7 @@ function adminToken(req, res, next) {
         req.token = bearerToken;
         next();
     } else {
-        console.log('no token');
+        console.log('no token this');
         res.sendStatus(403);
     }
 }

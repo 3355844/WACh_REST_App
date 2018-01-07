@@ -56,30 +56,51 @@ $(() => {
                     tbodyEL.append('\
                     <tr>\
                     <td>' + user.location + '</td>\
-                    <td><input type="text" class="name form-control" value="' + user.username + '"/></td>\
-                    \
+                    <td>' + user.username + '</td>\
                     </tr>');
                 })
             }
         });
     });
 
+    // LOGIN USER
 
-    //CRUD ADMIN
-    $('#get-button').on('click', () => {
+    $('#admin-login').on('click', (event) => {
+        console.log('Admin login button is pressed');
+        event.preventDefault();
+        var adminLogin = $('#lg_username').val();
+        var adminPass = $('#lg_password').val();
+
         $.ajax({
-            // cache: false,
-            url: 'users',
-            method: 'GET',
+            url: '/admin/login',
+            method: 'POST',
             contentType: 'application/json',
-            success: function (res) {
-                var tbodyEL = $('tbody');
-                tbodyEL.html('');
+            data: JSON.stringify({
+                adminLogin: adminLogin,
+                adminPass: adminPass
+            }),
+            success: (data) => {
+                token += data.token;
+                console.log(token);
+                userTitleName = data.user;
+                console.log('enother ajax request!!!');
+                $.ajax({
+                    // cache: false,
+                    url: '/admin/users',
+                    method: 'GET',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        success: true,
+                        token: token,
+                        user: userTitleName
+                    }),
+                    success: function (res) {
+                        var tbodyEL = $('tbody');
+                        tbodyEL.html('');
 
-                res.userList.forEach(function (user) {
-                    console.log('function res');
-                    tbodyEL.append('\
-                    <tr>\
+                        res.userList.forEach(function (user) {
+                            console.log('function res');
+                            tbodyEL.append('\<tr>\
                     <td class="id">' + user._id + '</td>\
                     <td>' + user.location + '</td>\
                     <td><input type="text" class="name form-control" value="' + user.username + '"/></td>\
@@ -88,10 +109,17 @@ $(() => {
                     <button class="delete-button btn btn-outline-danger">DELETE</button>\
                     </td>\
                     </tr>');
-                })
+                        })
+                    }
+                });
             }
         });
     });
+
+    //CRUD ADMIN
+    function showUser() {
+
+    }
 
 //  LOGOUT USER
     $('#logout').on('click', (event) => {
@@ -238,4 +266,5 @@ $(() => {
             }
         })
     });
-});
+})
+;

@@ -58,17 +58,26 @@
 <section class="container">
     <div class="row">
         <!--Get button-->
-        <div class="col-2">
+        <div class="col-5">
             <button class="btn btn-outline-success mt-2" id="get-button">USERS</button>
-        </div>
-        <!--Profile page-->
-        <div class="col-1">
+            <!--Profile page-->
             <a id="profile" class="btn-outline-warning btn mt-2">
                 <div id="userTitleName" class="text-center col-1 nav-item">WACh</div>
             </a>
+            <!--User table-->
+            <table class="table table-warning">
+                <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
         <!--Chat-->
-        <div class="col-4 ml-2 text-center">
+        <div class="col-6 ml-2 text-center">
             <h1>Chat</h1>
             <ul class="text-left list-group" id="messages"></ul>
             <form id="form-chat">
@@ -80,19 +89,7 @@
     </div>
 </section>
 <hr>
-<!--User table-->
-<table class="table table-warning">
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Location</th>
-        <th>Name</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="js/main.js"></script>
 </body>
