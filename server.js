@@ -24,10 +24,12 @@ app.use(function (req, res, next) {
 // Methods
 
 
+// REDIRECT TO ADMIN PAGE
 app.get('/admin', (req, res) => {
-    res.redirect('/login.html');
+    res.redirect('/admin.html');
 });
 
+// ADMIN LOGIN POST METHOD
 app.post('/admin/login', (req, res) => {
     console.log('come to Post method');
     var adminName = req.body.adminLogin;
@@ -35,6 +37,7 @@ app.post('/admin/login', (req, res) => {
     var adminUser;
     var token;
     adminUser = 'administrator';
+    console.log('Admin Data: '+adminName + ' ' + adminPass);
     if (adminName === 'admin' && adminPass === 'admin') {
         token = jwt.sign({adminUser}, 'admin_key');
         console.log(token);
@@ -44,16 +47,14 @@ app.post('/admin/login', (req, res) => {
             user: adminUser
         });
     } else {
-        res.json({
-            success: false,
-        });
+        res.sendStatus(403);
     }
 });
 
 // ADMIN GET USERS
 app.get('/admin/users', adminToken, (req, res) => {
     console.log('admin users URL');
-    console.log('admin token ' + req.headers.authorization);
+    console.log('admin token ' + req.token);
 
     var db = req.db;
     console.log('GET URL users');
@@ -67,12 +68,18 @@ function adminToken(req, res, next) {
     console.log('come to admin token method');
     const bearerHeader = req.headers.authorization;
     console.log(bearerHeader);
+
     if (typeof bearerHeader !== 'undefined') {
         console.log(bearerHeader);
         const bearer = bearerHeader.split(" ");
         const bearerToken = bearer[1];
-        req.token = bearerToken;
-        next();
+        if (typeof bearerToken !== 'undefined') {
+            req.token = bearerToken;
+            next();
+        } else {
+            console.log('no token this again');
+            res.sendStatus(403);
+        }
     } else {
         console.log('no token this again');
         res.sendStatus(403);
@@ -168,7 +175,7 @@ app.post('/users', (req, res) => {
     });
 });
 
-app.put('/users/:id', ensureToken, (req, res) => {
+app.put('/users/:id', adminToken, (req, res) => {
     console.log('PUT URL users');
     var id = req.params.id;
     var newName = req.body.newName;
@@ -181,7 +188,7 @@ app.put('/users/:id', ensureToken, (req, res) => {
     });
 });
 
-app.delete('/users/:id', ensureToken, (req, res) => {
+app.delete('/users/:id', adminToken, (req, res) => {
     console.log('DELETE URL users');
     var id = req.params.id;
     var found = false;

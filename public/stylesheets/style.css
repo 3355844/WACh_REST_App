@@ -6,3 +6,12 @@ body {
 a {
   color: #00B7FF;
 }
+
+
+#admin-get-users{
+  display: none;
+}
+
+#users-table{
+  display: none;
+}

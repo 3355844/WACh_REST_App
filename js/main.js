@@ -26,7 +26,7 @@ $(() => {
 
     });
 
-//  PROFILE PAGE
+    //  PROFILE PAGE
     $('#profile').on('click', () => {
         console.log('is click');
         console.log(token);
@@ -40,7 +40,7 @@ $(() => {
         })
     });
 
-//  GET/READ/
+    //  GET/READ/
     $('#get-button').on('click', () => {
         $.ajax({
             // cache: false,
@@ -50,7 +50,6 @@ $(() => {
             success: function (res) {
                 var tbodyEL = $('tbody');
                 tbodyEL.html('');
-
                 res.userList.forEach(function (user) {
                     console.log('function res');
                     tbodyEL.append('\
@@ -64,35 +63,44 @@ $(() => {
     });
 
     // LOGIN ADMIN
-
     $('#admin-login').on('click', (event) => {
         console.log('Admin login button is pressed');
         event.preventDefault();
         var adminLogin = $('#lg_username');
         var adminPass = $('#lg_password');
-
-        $.ajax({
-            url: '/admin/login',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                adminLogin: adminLogin.val(),
-                adminPass: adminPass.val()
-            }),
-            success: (data) => {
-                console.log('This user token: ' + token);
-                token = 'bearer ' + data.token;
-                console.log(token);
-                userTitleName = data.user;
-                alert('Login successful');
-                console.log(data);
-                adminPass.val('');
-                adminLogin.val('');
-            }
-        });
+        console.log(adminPass.val() + " " + adminLogin.val());
+        if (adminPass.val() === '' && adminPass.val() === '') {
+            alert('Fill all fills please');
+        } else {
+            $.ajax({
+                url: '/admin/login',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    adminLogin: adminLogin.val(),
+                    adminPass: adminPass.val()
+                }),
+                success: (data) => {
+                    console.log('This user token: ' + token);
+                    token = 'bearer ' + data.token;
+                    console.log(token);
+                    userTitleName = data.user;
+                    alert('Login successful');
+                    console.log(data);
+                    adminPass.val('');
+                    adminLogin.val('');
+                    $('#users-table').show();
+                    $('#admin-get-users').click();
+                },
+                error: function () {
+                    alert('Wrong username or password check please and try one more time');
+                    $('#lg_password').val('');
+                }
+            });
+        }
     });
 
-
+    // ADMIN GET USERS
     $('#admin-get-users').on('click', () => {
         console.log(token);
         $.ajax({
@@ -103,13 +111,9 @@ $(() => {
             headers: {
                 authorization: token
             },
-            // data: JSON.stringify({
-            //     success: true,
-            //     token: token,
-            //     user: userTitleName
-            // }),
             success: function (res) {
                 $('#admin-login-form').hide();
+                $('#admin-get-users').hide();
                 var tbodyEL = $('tbody');
                 tbodyEL.html('');
 
@@ -252,10 +256,13 @@ $(() => {
             url: '/users/' + id,
             method: 'PUT',
             contentType: 'application/json',
+            headers: {
+                authorization: token
+            },
             data: JSON.stringify({newName: newName}),
             success: function (res) {
                 console.log(res);
-                $('#get-button').click();
+                $('#admin-get-users').click();
             }
         });
     });
@@ -269,9 +276,12 @@ $(() => {
             url: '/users/' + id,
             method: 'DELETE',
             contentType: 'application/json',
+            headers: {
+                authorization: token
+            },
             success: function (res) {
                 console.log(res);
-                $('#get-button').click();
+                $('#admin-get-users').click();
             }
         })
     });
