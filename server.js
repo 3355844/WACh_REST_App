@@ -50,27 +50,22 @@ app.post('/admin/login', (req, res) => {
     }
 });
 
+// ADMIN GET USERS
 app.get('/admin/users', adminToken, (req, res) => {
     console.log('admin users URL');
-    console.log();
-    jwt.verify(req.token, 'admin_key', (err, data) => {
-        if (err) {
-            res.sendStatus(403);
-        } else {
-            var db = req.db;
-            console.log('GET URL users');
-            var users = db.get('userlist');
-            users.find({}, {}, function (e, docs) {
-                res.json({userList: docs});
-            });
-        }
+    console.log('admin token ' + req.headers.authorization);
+
+    var db = req.db;
+    console.log('GET URL users');
+    var users = db.get('userlist');
+    users.find({}, {}, function (e, docs) {
+        res.json({userList: docs});
     });
-
-
 });
 
 function adminToken(req, res, next) {
-    const bearerHeader = req.headers["authorization"];
+    console.log('come to admin token method');
+    const bearerHeader = req.headers.authorization;
     console.log(bearerHeader);
     if (typeof bearerHeader !== 'undefined') {
         console.log(bearerHeader);
@@ -79,13 +74,12 @@ function adminToken(req, res, next) {
         req.token = bearerToken;
         next();
     } else {
-        console.log('no token this');
+        console.log('no token this again');
         res.sendStatus(403);
     }
 }
 
 // Users URL
-
 app.post('/api/login', (req, res) => {
     //    auth user
     var userEmail = req.body.emailForm;

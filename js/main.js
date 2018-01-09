@@ -63,63 +63,72 @@ $(() => {
         });
     });
 
-    // LOGIN USER
+    // LOGIN ADMIN
 
     $('#admin-login').on('click', (event) => {
         console.log('Admin login button is pressed');
         event.preventDefault();
-        var adminLogin = $('#lg_username').val();
-        var adminPass = $('#lg_password').val();
+        var adminLogin = $('#lg_username');
+        var adminPass = $('#lg_password');
 
         $.ajax({
             url: '/admin/login',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
-                adminLogin: adminLogin,
-                adminPass: adminPass
+                adminLogin: adminLogin.val(),
+                adminPass: adminPass.val()
             }),
             success: (data) => {
-                token += data.token;
+                console.log('This user token: ' + token);
+                token = 'bearer ' + data.token;
                 console.log(token);
                 userTitleName = data.user;
-                console.log('enother ajax request!!!');
-                $.ajax({
-                    // cache: false,
-                    url: '/admin/users',
-                    method: 'GET',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        success: true,
-                        token: token,
-                        user: userTitleName
-                    }),
-                    success: function (res) {
-                        var tbodyEL = $('tbody');
-                        tbodyEL.html('');
-
-                        res.userList.forEach(function (user) {
-                            console.log('function res');
-                            tbodyEL.append('\<tr>\
-                    <td class="id">' + user._id + '</td>\
-                    <td>' + user.location + '</td>\
-                    <td><input type="text" class="name form-control" value="' + user.username + '"/></td>\
-                    <td>\
-                    <button class="update-button btn btn-outline-success">UPDATE/PUT</button>\
-                    <button class="delete-button btn btn-outline-danger">DELETE</button>\
-                    </td>\
-                    </tr>');
-                        })
-                    }
-                });
+                alert('Login successful');
+                console.log(data);
+                adminPass.val('');
+                adminLogin.val('');
             }
         });
     });
 
-    //CRUD ADMIN
-    function showUser() {
 
-    }
+    $('#admin-get-users').on('click', () => {
+        console.log(token);
+        $.ajax({
+            // cache: false,
+            url: '/admin/users',
+            method: 'GET',
+            contentType: 'application/json',
+            headers: {
+                authorization: token
+            },
+            // data: JSON.stringify({
+            //     success: true,
+            //     token: token,
+            //     user: userTitleName
+            // }),
+            success: function (res) {
+                $('#admin-login-form').hide();
+                var tbodyEL = $('tbody');
+                tbodyEL.html('');
+
+                res.userList.forEach(function (user) {
+                    console.log('function res');
+                    tbodyEL.append('\<tr>\
+                        <td class="id">' + user._id + '</td>\
+                        <td>' + user.location + '</td>\
+                        <td><input type="text" class="name form-control" value="' + user.username + '"/></td>\
+                        <td>\
+                        <button class="update-button btn btn-outline-success">UPDATE/PUT</button>\
+                        <button class="delete-button btn btn-outline-danger">DELETE</button>\
+                        </td>\
+                        </tr>');
+                })
+            }
+        });
+    });
+
 
 //  LOGOUT USER
     $('#logout').on('click', (event) => {
