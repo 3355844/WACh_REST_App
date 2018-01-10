@@ -104,7 +104,6 @@ $(() => {
     $('#admin-get-users').on('click', () => {
         console.log(token);
         $.ajax({
-            // cache: false,
             url: '/admin/users',
             method: 'GET',
             contentType: 'application/json',
@@ -205,10 +204,14 @@ $(() => {
             }
         });
         // Check passwords
-        if (regPass !== regPassCheck) {
+        console.log('Error count: ' + errorCount);
+        if (regPass.val() !== regPassCheck.val()) {
             errorCount++;
+            regPassCheck.val('');
+            alert('Different passwords');
         }
         // Add User or Err
+        console.log('Error count: ' + errorCount);
         if (errorCount === 0) {
             $.ajax({
                 url: '/users',
